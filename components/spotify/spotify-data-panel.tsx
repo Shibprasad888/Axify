@@ -1,0 +1,6 @@
+'use client'
+import { useSpotifyResource } from '@/lib/spotify/hooks'
+import type { SpotifyPage, SpotifyRecentlyPlayed } from '@/lib/spotify/types'
+import { formatDuration, spotifyArtistNames } from '@/lib/spotify/types'
+
+export function SpotifyDataPanel() { const { data, loading, error } = useSpotifyResource<{ items: SpotifyRecentlyPlayed[] }>('recently-played', { limit: '5' }); if (loading) return <section className="glass spotify-data-panel"><p className="eyebrow">SPOTIFY</p><h2>Loading your listening history...</h2></section>; if (error) return <section className="glass spotify-data-panel"><p className="eyebrow">SPOTIFY</p><h2>Connect Spotify to see your music.</h2><p className="muted">{error}</p></section>; return <section className="glass spotify-data-panel"><div className="dash-section-title"><div><p className="eyebrow">FROM SPOTIFY</p><h2>Recently played</h2></div><span className="spotify-status"><span className="spotify-dot" />Live</span></div><div className="spotify-live-list">{data?.items?.map((item) => <div className="spotify-live-row" key={`${item.track.id}-${item.played_at}`}><div className="spotify-live-cover" /><span><strong>{item.track.name}</strong><small>{spotifyArtistNames(item.track.artists)}</small></span><time>{formatDuration(item.track.duration_ms)}</time></div>)}</div></section> }
